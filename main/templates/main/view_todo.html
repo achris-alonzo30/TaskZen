@@ -1,0 +1,101 @@
+{% extends "main/base.html" %}
+
+{% block title %} View Todo {% endblock %}
+
+{% block style %}
+    {{ block.super }}
+
+    <style>
+
+        .ubuntu-font {
+            font-family: 'Ubuntu', sans-serif;
+            color: #0F0B1A;
+        }
+
+        .border-icon {
+            background-color: #FEFAE0;
+        }
+
+        .edit-btn {
+            background-color: #606C38;
+            color: #FEFAE0;
+        }
+
+        .edit-btn:hover {
+            background-color: #91784E;
+            color: #FEFAE0;
+        }
+
+        .delete-btn {
+            background-color: #C3423F;
+            color: #EDEDED;
+        }
+
+        .delete-btn:hover {
+            background-color: #EABFCB;
+            color: #0F0B1A;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <div class="headers d-flex align-items-center justify-content-between ubuntu-font">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-column">
+                    <h1 class="my-1 mx-2 text-capitalize">{{ todo.todo_title }}</h1>
+                    <p class="text-muted mx-2">Created on: {{ todo.created_at|date:"F d, Y | H:i" }}</p>
+                </div>
+            </div>
+
+
+            <div class="contents-right d-flex align-items-center">
+                <a href="{% url 'main:edit_todo' todo.id %}" class="btn edit-btn d-flex align-items-center me-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square me-2" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                    </svg>
+                    <p class="mb-0">Edit</p>
+                </a>
+
+                <form method="POST" action="{% url 'main:todo_list' %}">
+                {% csrf_token %}
+                <input type="hidden" name="delete_id" value="{{ todo.id }}">
+                    <button class="btn delete-btn d-flex align-items-center" name="action" value="delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill me-2" viewBox="0 0 16 16">
+                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                        </svg>
+                        <span class="mb-0">Delete</span>
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row ubuntu-font">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Task Details</h4>
+                        <p class="card-text"><strong>Status:</strong> {% if todo.completed %}Completed{% else %}Incomplete{% endif %}</p>
+                        <p class="card-text"><strong>Due Date:</strong> {{ todo.due_date }}</p>
+                        <p class="card-text"><strong>Due Time:</strong> {{ todo.due_time }}</p>
+                        <p class="card-text"><strong>Category:</strong> {{ todo.get_category_display }}</p>
+                        <p class="card-text"><strong>Priority:</strong> {{ todo.get_priority_display }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Description</h4>
+                        <p class="card-text">{{ todo.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

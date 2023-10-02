@@ -1,0 +1,70 @@
+{% extends "main/base.html" %}
+
+{% block title %} Edit Todo {% endblock %}
+
+{% block style %}
+    <style>
+        .ubuntu-font {
+            font-family: 'Ubuntu', sans-serif;
+            color: #0F0B1A;
+        }
+
+        .add-btn {
+            background-color: #606C38;
+            color: #FEFAE0;
+        }
+
+        .add-btn:hover {
+            background-color: #A7B872;
+            color: #0F0B1A;
+        }
+
+        .delete-btn {
+            background-color: #C3423F;
+            color: #EDEDED;
+        }
+
+        .delete-btn:hover {
+            background-color: #FF6E6B;
+            color: #0F0B1A;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-4 ubuntu-font">
+        <h1 class="mt-4">Edit Task</h1>
+        <hr>
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            <div class="card border shadow p-2 my-4">
+                <div class="card-body">
+                    <label for="project_folder"><b>Project Folder:</b></label>
+                    <select name="project_folder" id="project_folder" class="form-select mb-2">
+                        <option value="" selected>Please Select A New Project Folder</option>
+                        {% for folder in project_folders %}
+                            <option value="{{ folder.pk }}">{{ folder.project_folder_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="card border shadow p-2 my-4">
+                <div class="card-body">
+                    {% for field in edit_form %}
+                        <div class="d-flex align-items-center justify-content-start flex-wrap mt-4">
+                            <label class="me-2" for="{{ field.id_for_label }}"><b>{{ field.label_tag }}</b></label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mb-3 mt-4">
+                <button class="btn add-btn btn-lg shadow w-100" type="submit">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

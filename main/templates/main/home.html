@@ -1,0 +1,519 @@
+{% extends "main/base.html" %}
+
+{% block title %} Home {% endblock %}
+
+{% block style %}
+    {{ block.super }}
+
+    <style>
+        .headers {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-button {
+            display: flex;
+            align-items: center;
+            color: #0F0B1A;
+        }
+
+        .header-button svg {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .header-button span {
+            margin: 0;
+            font-family: 'Ubuntu', sans-serif;
+        }
+        .ubuntu-font {
+            font-family: 'Ubuntu', sans-serif;
+            color: #0F0B1A;
+        }
+
+        .prompt-font {
+            font-family: 'Prompt', sans-serif;
+            color: #0F0B1A;
+            font-size: 6rem;
+        }
+
+        .create-button {
+            background-color: #606C38;
+            color: #FEFAE0;
+        }
+
+        .create-button:hover{
+            background-color: #A7B872;
+            color: #0F0B1A;
+        }
+
+        .create-button:hover svg {
+            fill: #0F0B1A;
+        }
+
+        .primary-highlight {
+            background-color: #FEFAE0;
+        }
+
+        .secondary-highlight {
+            background-color: #91784E;
+            color: #FEFAE0;
+        }
+
+        .primary-card-link {
+            text-decoration: none;
+            font-size: 0.75rem;
+            color: #0F0B1A;
+        }
+
+        .secondary-card-link {
+            text-decoration: none;
+            font-size: 0.75rem;
+            color: #FEFAE0;
+        }
+
+        .search-bar {
+            max-width: 100%;
+        }
+
+        .filter-select {
+            min-width: 200px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-4">
+        <!-- Headers Section -->
+        <div class="headers">
+            <div class="headers-text">
+                <h1 class="mt-4 ubuntu-font"><b>TaskZen</b></h1>
+                <p class="ubuntu-font">Harmonize Your <span><b>Task</b></span>, Harmonize Your <span><b>Life</b></span></p>
+            </div>
+
+            <a href="{% url 'main:create_todo' %}" class="btn create-button shadow d-flex align-items-center header-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#FEFAE0" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                </svg>
+                <span>Add New Task</span>
+            </a>
+        </div>
+
+        {% include "main/breadcrumbs.html" %}
+
+        <hr>
+
+        <!-- Task Overview -->
+        <div class="card border-0 shadow p-4 ubuntu-font">
+            <h5 class="card-title">Task Overview: </h5>
+            <div class="card-bodies d-flex align-items-center justify-content-evenly">
+                <!-- Due Today Card -->
+                <div class="border rounded p-2 primary-highlight w-100 m-2">
+                    <div class="card-header primary-highlight d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-center align-items-center rounded bg-dark p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-hourglass" viewBox="0 0 16 16">
+                                <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5zm2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2h-7z"/>
+                            </svg>
+                        </div>
+                        <h6 class="card-title mt-2">Due Today</h6>
+                    </div>
+
+                    <div class="card-body">
+                        <h1 class="prompt-font d-flex justify-content-end">{{ due_today_tasks }}</h1>
+                    </div>
+
+                    <div class="card-footer primary-highlight d-flex align-items-center justify-content-between">
+                        <a class="primary-card-link" href="{% url 'main:todo_list' %}?filter=today">View Due Today Tasks</a>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+                        </svg>
+                    </div>
+                </div>
+                <!-- End Due Today Card -->
+
+                <!-- Upcoming Card -->
+                <div class="border rounded p-2 secondary-highlight w-100 m-2">
+                    <div class="card-header secondary-highlight d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-center align-items-center rounded bg-dark p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/>
+                            </svg>
+                        </div>
+                        <h6 class="card-title mt-2">Upcoming</h6>
+                    </div>
+
+                    <div class="card-body">
+                        <h1 class="prompt-font d-flex justify-content-end secondary-highlight">{{ upcoming_tasks }}</h1>
+                    </div>
+
+                    <div class="card-footer secondary-highlight d-flex align-items-center justify-content-between">
+                        <a class="secondary-card-link" href="{% url 'main:todo_list' %}?filter=upcoming">View Upcoming Tasks</a>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+                        </svg>
+                    </div>
+                </div>
+                <!-- End Upcoming Card -->
+
+
+                <!-- Completed Card -->
+                <div class="border rounded p-2 secondary-highlight w-100 m-2">
+                    <div class="card-header secondary-highlight d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-center align-items-center rounded bg-dark p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-clipboard-check" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                              <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                              <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                            </svg>
+                        </div>
+                        <h6 class="card-title mt-2">Completed</h6>
+                    </div>
+
+                    <div class="card-body">
+                        <h1 class="prompt-font d-flex justify-content-end secondary-highlight">{{ completed_tasks }}</h1>
+                    </div>
+
+                    <div class="card-footer secondary-highlight d-flex align-items-center justify-content-between">
+                        <a class="secondary-card-link" href="{% url 'main:completed_list' %}">View Completed Tasks</a>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+                        </svg>
+                    </div>
+                </div>
+                <!-- END Completed Task -->
+
+                <!-- Overdue Task -->
+                <div class="border rounded p-2 secondary-highlight w-100 m-2">
+                    <div class="card-header secondary-highlight d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-center align-items-center rounded bg-dark p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-exclamation-diamond" viewBox="0 0 16 16">
+                              <path d="M6.95.435c.58-.58 1.52-.58 2.1 0l6.515 6.516c.58.58.58 1.519 0 2.098L9.05 15.565c-.58.58-1.519.58-2.098 0L.435 9.05a1.482 1.482 0 0 1 0-2.098L6.95.435zm1.4.7a.495.495 0 0 0-.7 0L1.134 7.65a.495.495 0 0 0 0 .7l6.516 6.516a.495.495 0 0 0 .7 0l6.516-6.516a.495.495 0 0 0 0-.7L8.35 1.134z"/>
+                              <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                            </svg>
+                        </div>
+                        <h6 class="card-title mt-2">Overdue</h6>
+                    </div>
+
+                    <div class="card-body">
+                        <h1 class="prompt-font d-flex justify-content-end secondary-highlight">{{ overdue_tasks }}</h1>
+                    </div>
+
+                    <div class="card-footer secondary-highlight d-flex align-items-center justify-content-between">
+                        <a class="secondary-card-link" href="{% url 'main:todo_list' %}?filter=overdue">View Overdue Tasks</a>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+                        </svg>
+                    </div>
+                </div>
+                <!-- END Overdue Task -->
+            </div>
+        </div>
+
+        <!-- Category Overview -->
+        <div class="card border-0 shadow p-4 mt-4 ubuntu-font">
+            <h5 class="card-title">Task by Category: </h5>
+            <div class="progress-stacked">
+                {% for category_data in category_data_list %}
+                    <div class="progress" role="progressbar" aria-label="{{ category_data.category }}" aria-valuenow="{{ category_data.percentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ category_data.percentage }}%">
+                        <div class="progress-bar" style="background-color: {{ category_data.color }};"></div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="progress-legends d-flex align-items-center justify-content-start mt-2">
+                <div class="d-flex align-items-center justify-content-evenly">
+                    {% for category_data in category_data_list %}
+                        <span class="d-flex align-items-center m-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="{{ category_data.color }}" class="bi bi-circle-fill mx-2" viewBox="0 0 16 16">
+                                <circle cx="8" cy="8" r="8"/>
+                            </svg>
+                            {{ category_data.category|title }}  <!-- Assuming your category names are lowercase, use |title filter to capitalize the first letter -->
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Folder -->
+        <div class="card border-0 shadow p-4 mt-4 ubuntu-font">
+            <h2 class="card-title">Create a New Project Folder</h2>
+            <form method="POST" action="{% url 'main:home' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ project_folder_form.project_folder_name.id_for_label }}">Project Folder Name: </label>
+                    {{ project_folder_form.project_folder_name }}
+                </div>
+                <button class="btn create-button mt-3" type="submit">Create Folder</button>
+            </form>
+        </div>
+
+        <!-- Table Overview -->
+        <div class="card border-0 shadow p-4 my-4 ubuntu-font">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="input-group my-2">
+                    <input type="text" class="form-control search-bar" id="searchInput" placeholder="Search by Title" aria-label="Search" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-secondary" type="button" id="button-addon2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center">
+                    <p class="m-2" style="white-space: nowrap;">Due Date:</p>
+                    <select class="form-select filter-select" aria-label="Small select example" id="dateFilterSelect">
+                        <option value="all">-------</option>
+                        <option value="latest">Latest Due Date</option>
+                        <option value="oldest">Oldest Due Date</option>
+                    </select>
+
+                    <p class="m-2" style="white-space: nowrap;">Category:</p>
+                    <select class="form-select filter-select" aria-label="Small select example" id="categoryFilterSelect">
+                        <option value="all">All Categories</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Work">Work</option>
+                        <option value="School">School</option>
+                        <option value="Social">Social</option>
+                        <option value="Health">Health</option>
+                        <option value="Finances">Finances</option>
+                        <option value="Hobbies">Hobbies</option>
+                        <option value="Miscellaneous">Miscellaneous</option>
+                    </select>
+
+                    <p class="m-2" style="white-space: nowrap;">Status:</p>
+                    <select class="form-select filter-select" aria-label="Small select example" id="statusFilterSelect">
+                        <option value="all">All Status</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col"></th>
+                      <th scope="col">Task Title</th>
+                      <th scope="col">Due Date</th>
+                      <th scope="col">Category</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-group-divider" id="table-body">
+                    {% for task in todo_lists %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td><a style="text-decoration: none;" href="{% url 'main:view_todo' task.id %}">{{ task.todo_title }}</a></td>
+                            <td>{{ task.due_date|date:"M d, Y" }}</td>
+                            <td>{{ task.category|capfirst }}</td>
+                            <td>{{ task.description|truncatechars:50}}</td>
+                            <td data-status="{% if not task.completed %}in-progress{% elif task.due_date < today %}overdue{% else %}completed{% endif %}">
+                                {% if not task.completed %}
+                                In Progress
+                                {% elif task.due_date < today %}
+                                Overdue
+                                {% else %}
+                                Completed
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer">
+                <div class="pagination-buttons d-flex justify-content-end m-2">
+                    <button class="btn create-button me-2 p-2 d-flex align-items-center" id="prev-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-1" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                        </svg>
+                        Previous
+                    </button>
+                    <button class="btn create-button p-2 d-flex align-items-center" id="next-button">
+                        Next
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right ms-1" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block scripts %}
+        <script>
+            // ****************************************** Search Bar ****************************************** \\
+            // Function to filter the table rows
+            function filterTable() {
+                // Get the input element and filter value
+                var input = document.getElementById("searchInput");
+                var filter = input.value.toLowerCase();
+
+                // Get the table body and rows
+                var tableBody = document.querySelector(".table-group-divider");
+                var rows = tableBody.getElementsByTagName("tr");
+
+                // Loop through the rows and hide those that don't match the filter
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    var taskTitle = row.querySelector("td:nth-child(2)"); // This selects the second td element (Task Title)
+
+                    if (taskTitle) {
+                        var titleText = taskTitle.textContent || taskTitle.innerText;
+                        if (titleText.toLowerCase().indexOf(filter) > -1) {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
+                    }
+                }
+            }
+
+            // Attach an event listener to the input element
+            var searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", filterTable);
+
+            // Call filterTable initially to handle any initial search input
+            filterTable();
+
+            // ****************************************** Due Date ****************************************** \\
+            // Function to sort the table rows by due date
+            function sortTableByDueDate() {
+                var select = document.getElementById("dateFilterSelect");
+                var selectedOption = select.options[select.selectedIndex].value;
+                var tableBody = document.querySelector(".table-group-divider");
+                var rows = Array.from(tableBody.getElementsByTagName("tr"));
+
+                rows.sort(function (a, b) {
+                    var dateA = new Date(
+                        a.querySelector("td:nth-child(3)").textContent
+                    );
+                    var dateB = new Date(
+                        b.querySelector("td:nth-child(3)").textContent
+                    );
+
+                    if (selectedOption === "latest") {
+                        return dateB - dateA;
+                    } else if (selectedOption === "oldest") {
+                        return dateA - dateB;
+                    }
+
+                    return 0;
+                });
+
+                // Clear the table body
+                while (tableBody.firstChild) {
+                    tableBody.removeChild(tableBody.firstChild);
+                }
+
+                // Append sorted rows back to the table body
+                rows.forEach(function (row) {
+                    tableBody.appendChild(row);
+                });
+            }
+
+            // Attach an event listener to the select element
+            var dateFilterSelect = document.getElementById("dateFilterSelect");
+            dateFilterSelect.addEventListener("change", sortTableByDueDate);
+
+            // ****************************************** Category ****************************************** \\
+            // Function to filter the table rows by category
+            function filterTableByCategory() {
+                var select = document.getElementById("categoryFilterSelect");
+                var selectedOption = select.options[select.selectedIndex].value;
+                var tableBody = document.querySelector(".table-group-divider");
+                var rows = Array.from(tableBody.getElementsByTagName("tr"));
+
+                rows.forEach(function (row) {
+                    var categoryCell = row.querySelector("td:nth-child(4)");
+                    if (!categoryCell) {
+                        return; // Skip rows without the category cell
+                    }
+                    var category = categoryCell.textContent;
+
+                    if (selectedOption === "all" || category === selectedOption) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            }
+
+            // Attach an event listener to the select element
+            var categoryFilterSelect = document.getElementById("categoryFilterSelect");
+            categoryFilterSelect.addEventListener("change", filterTableByCategory);
+
+            // Call filterTableByCategory initially to handle any initial category filter
+            filterTableByCategory();
+
+            // ****************************************** Status ****************************************** \\
+            // Function to filter the table rows by status
+            function filterTableByStatus() {
+                var select = document.getElementById("statusFilterSelect");
+                var selectedOption = select.options[select.selectedIndex].value;
+                var tableBody = document.querySelector(".table-group-divider");
+                var rows = Array.from(tableBody.getElementsByTagName("tr"));
+
+                rows.forEach(function (row) {
+                    var status = row.querySelector("td[data-status]").getAttribute("data-status");
+
+                    if (selectedOption === "all" || status === selectedOption) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            }
+
+            // Attach an event listener to the select element
+            var statusFilterSelect = document.getElementById("statusFilterSelect");
+            statusFilterSelect.addEventListener("change", filterTableByStatus);
+
+            // Call filterTableByStatus initially to handle any initial status filter
+            filterTableByStatus();
+
+            // ****************************************** Pagination ****************************************** \\
+            $(document).ready(function () {
+                var currentPage = 1; // Initialize current page
+                var rowsPerPage = 10; // Number of rows per page
+                var tableBody = $("#table-body");
+
+                // Calculate the total number of rows
+                var totalRows = tableBody.find("tr").length;
+                var totalPages = Math.ceil(totalRows / rowsPerPage);
+
+                // Function to show the specified page
+                function showPage(page) {
+                    tableBody.find("tr").hide(); // Hide all rows
+                    var startIndex = (page - 1) * rowsPerPage;
+                    var endIndex = startIndex + rowsPerPage;
+                    tableBody.find("tr").slice(startIndex, endIndex).show();
+                }
+
+                // Show the initial page
+                showPage(currentPage);
+
+                // Handle "Next" button click
+                $("#next-button").click(function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        showPage(currentPage);
+                    }
+                });
+
+                // Handle "Previous" button click
+                $("#prev-button").click(function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        showPage(currentPage);
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+
+{% endblock %}

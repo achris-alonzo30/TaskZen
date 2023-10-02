@@ -1,0 +1,123 @@
+{% extends "main/base.html" %}
+
+{% block title %} Add New Task {% endblock %}
+
+{% block style %}
+    {{ block.super }}
+
+    <style>
+        .ubuntu-font {
+            font-family: 'Ubuntu', sans-serif;
+            color: #0F0B1A;
+        }
+
+        .add-btn {
+            background-color: #606C38;
+            color: #FEFAE0;
+        }
+
+        .add-btn:hover {
+            background-color: #A7B872;
+            color: #0F0B1A;
+        }
+
+        .delete-btn {
+            background-color: #C3423F;
+            color: #EDEDED;
+        }
+
+        .delete-btn:hover {
+            background-color: #FF6E6B;
+            color: #0F0B1A;
+        }
+
+        .tags-input {
+            display: inline-block;
+            position: relative;
+            border: 1px solid #EDEDED;
+            border-radius: 5px;
+            padding: 5px;
+            width: 50%;
+            font-size: 1rem;
+        }
+
+        .tags-input ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tags-input li {
+            display: inline-block;
+            background-color: #f2f2f2;
+            color: #333;
+            border-radius: 20px;
+            padding: 5px 10px;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tags-input input[type="text"] {
+            border: none;
+            outline: none;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .tags-input input[type="text"]:focus {
+            outline: none;
+        }
+
+        .tags-input .delete-button {
+            background-color: transparent;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-4 ubuntu-font">
+        <h1 class="my-4">Add New Task</h1>
+
+        {% include "main/breadcrumbs.html" %}
+
+        <hr>
+
+        <form method="POST" action="{% url 'main:create_todo' %}">
+            {% csrf_token %}
+
+            <div class="card border shadow p-2">
+                <div class="card-body">
+                    <label for="project_folder"><b>Project Folder:</b></label>
+                    <select name="project_folder" id="project_folder" class="form-select mb-2">
+                        <option value="" selected>Choose a Project Folder</option>
+                        {% for folder in project_folders %}
+                            <option value="{{ folder.pk }}">{{ folder.project_folder_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="card border shadow p-2 my-4">
+                <div class="card-body">
+                    {% for field in todo_form %}
+                        <div class="d-flex align-items-center justify-content-start flex-wrap my-4">
+                            <label class="me-2" for="{{ field.id_for_label }}"><b>{{ field.label_tag }}</b></label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="my-4">
+                <button class="btn add-btn btn-lg shadow w-100" type="submit">Add Todo</button>
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}

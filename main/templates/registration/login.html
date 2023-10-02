@@ -1,0 +1,50 @@
+{% extends "main/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %} Login {% endblock %}
+
+{% block style %}
+    <style>
+        .ubuntu-font {
+            font-family: 'Ubuntu', sans-serif;
+            color: #0F0B1A;
+        }
+
+        .login-btn {
+            background-color: #606C38;
+            color: #FEFAE0;
+        }
+
+        .login-btn:hover {
+            background-color: #A7B872;
+            color: #0F0B1A;
+        }
+
+        .form-group p a {
+            color: #606C38;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container ">
+        <div class="row justify-content-center align-items-center" style="height: 100vh;">
+            <div class="col-md-6">
+                <div class="ubuntu-font card shadow p-4 d-flex align-items-center bg-body-tertiary w-100">
+                    <h1 class="">TaskZen</h1>
+                    <p>Harmonize Your <span><b>Task</b></span>, Harmonize Your <span><b>Life</b></span></p>
+
+                    <div class="card-body">
+                        <h2 class="card-title">Login To Your Account</h2>
+                        <form class="form-group" method="POST" action="">
+                            {% csrf_token %}
+                            {{ form | crispy }}
+                            <p class="card-text">Don't have an account? Create one <a style="text-decoration: none;" href="/register">here.</a></p>
+                            <button class="btn login-btn w-100 py-2" type="submit">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

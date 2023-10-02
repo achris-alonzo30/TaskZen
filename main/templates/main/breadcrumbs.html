@@ -1,0 +1,18 @@
+<div class="mb-2 breadcrumbs_links">
+    <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+                <li class="breadcrumb-item {% if request.path == '/' %}active{% endif %}">
+                    <a href="{% url 'main:home' %}">Home</a>
+                </li>
+                <li class="breadcrumb-item {% if request.path == '/create_todo/' %}active{% endif %}">
+                    <a href="{% url 'main:create_todo' %}">Create Task</a>
+                </li>
+                <li class="breadcrumb-item {% if request.path == '/todo_list/' %}active{% endif %}" aria-current="page">
+                    <a href="{% url 'main:todo_list' %}">View All Task</a>
+                </li>
+                <li class="breadcrumb-item {% if request.path == '/completed_list/' %}active{% endif %}" aria-current="page">
+                    <a href="{% url 'main:completed_list' %}">View Completed Task</a>
+                </li>
+          </ol>
+    </nav>
+</div>

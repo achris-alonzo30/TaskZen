@@ -1,0 +1,75 @@
+{% extends "main/base.html" %}
+
+{% block title %} Todos {% endblock %}
+
+{% block style %}
+    {{ block.super }}
+
+    <style>
+        .ubuntu-font {
+            font-family: 'Ubuntu', sans-serif;
+            color: #0F0B1A;
+        }
+
+        .completed-btn {
+            background-color: #606C38;
+            color: #FEFAE0;
+        }
+
+        .completed-btn:hover {
+            background-color: #A7B872;
+            color: #0F0B1A;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container ubuntu-font">
+        <h1 class="mt-4">
+            {% if filter_param == 'today' %}
+                Today's List
+            {% elif filter_param == 'upcoming' %}
+                Upcoming's List
+            {% elif filter_param == 'overdue' %}
+                Overdue's List
+            {% else %}
+                Todo List
+            {% endif %}
+        </h1>
+
+        {% include "main/breadcrumbs.html" %}
+
+        <hr>
+
+        <form method="POST" action="{% url 'main:todo_list' %}">
+            {% csrf_token %}
+            {% if user_todos %}
+            <div class="card border shadow p-3 mt-4">
+                {% for todo in user_todos %}
+                <div class="input-group flex-nowrap mt-2">
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="checkbox" name="completed" value="{{ todo.id }}" aria-label="Checkbox for completing the task">
+                    </div>
+
+                    <div class="form-control" aria-describedby="addon-wrapping"><a style="text-decoration: none;" href="{% url 'main:view_todo' todo.id %}">{{ todo.todo_title }}</a></div>
+
+                    <input type="hidden" name="delete_id" value="{{ todo.id }}">
+
+                    <button class="btn btn-danger input-group-text" type="submit" name="action" value="delete" data-id="{{ todo.id }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                        </svg>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="btn completed-btn btn-lg mt-4 shadow w-100" type="submit" name="action" value="complete">Mark Completed</button>
+            {% else %}
+            <p>No todos available.</p>
+            <a class="btn completed-btn btn-lg mt-4 shadow w-100" href="{% url 'main:create_todo' %}">Create Task</a>
+            {% endif %}
+        </form>
+
+    </div>
+{% endblock %}
